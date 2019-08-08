@@ -3,13 +3,17 @@ package org.msgpack;
 import haxe.io.Bytes;
 import org.msgpack.Decoder.DecodeOption;
 
+#if js
+
+@:expose
+#end
 class MsgPack {
 
-	public static inline function encode(d:Dynamic):Bytes { 
+	public static  function encode(d:Dynamic):Bytes { 
 		return new Encoder(d).getBytes(); 
 	}
 
-	public static inline function decode(b:Bytes, ?option:DecodeOption):Dynamic {
+	public static  function decode(b:Bytes, ?option:DecodeOption):Dynamic {
 		if (option == null) 
             option = DecodeOption.AsObject;
 

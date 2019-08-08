@@ -3,7 +3,7 @@
 msgpack-haxe
 ============
 
-MessagePack (http://msgpack.org) serialization library for Haxe
+MessagePack (http://msgpack.org) serialization library for HaXe
 
 How to install:
 -------------

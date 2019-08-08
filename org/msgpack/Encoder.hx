@@ -1,12 +1,15 @@
 package org.msgpack;
 
+import openfl.utils.ByteArray;
 import haxe.Int64;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
 
 using Reflect;
 
-
+#if
+js
+#end
 class Encoder {
 
 	static private inline var FLOAT_SINGLE_MIN:Float = 1.40129846432481707e-45;
@@ -32,13 +35,16 @@ class Encoder {
 			case TFloat   : writeFloat(d);
 			
 			case TClass(c): 
-				switch (Type.getClassName(c)) {
+			     var __name=Type.getClassName(c);
+				 var _name=Std.string(__name)=="true"?"String":__name;
+				switch (_name) {
 					case "haxe._Int64.___Int64" : writeInt64(d);
 					case "haxe.io.Bytes" : writeBinary(d);
 					case "String" : writeString(d);
 					case "Array"  : writeArray (d);
 					case "haxe.ds.IntMap" | "haxe.ds.StringMap" | "haxe.ds.UnsafeStringMap" : 
 					     writeMap(d);
+
 					default: throw 'Error: ${Type.getClassName(c)} not supported';
 				}
 
@@ -128,27 +134,41 @@ class Encoder {
 		o.write(b);
 	}
 
-	inline function writeString(b:String) {
-		var length = b.length;
-		if (length < 0x20) {
-			// fix string
-			o.writeByte(0xa0 | length);
-		} else 
-		if (length < 0x100) {
-			// string 8
+	inline function writeString(s:String) {
+
+		
+		//var b=Bytes.ofString(b).toHex();
+
+
+             var size = 0;
+		
+			var b :Bytes= Bytes.ofString(s);
+
+		     var length = b.length;
+
+		// o.writeByte(0xa0 | length)
+		// if (length < 0x20) {
+		// 	// fix string
+		// 	o.writeByte(0xa0 | length);
+		// } else 
+		// if (length < 0x100) {
+		// 	// string 8
+		// 	o.writeByte(0xd9);
+		// 	o.writeByte(length);
+		// } else
+		// if (length < 0x10000) {
+		// 	// string 16
+		// 	o.writeByte(0xda);
+		// 	o.writeUInt16(length);
+		// } else {
+		// 	// string 32
+		// 	o.writeByte(0xdb);
+		// 	o.writeInt32(length);
+		// }
+
 			o.writeByte(0xd9);
-			o.writeByte(length);
-		} else
-		if (length < 0x10000) {
-			// string 16
-			o.writeByte(0xda);
-			o.writeUInt16(length);
-		} else {
-			// string 32
-			o.writeByte(0xdb);
 			o.writeInt32(length);
-		}
-		o.writeString(b);
+		    o.writeBytes(b,0,b.length);
 	}
 
 	inline function writeArray(d:Array<Dynamic>) {

@@ -25,7 +25,9 @@ private class Pair {
 		this.v = v;
 	}
 }
-
+#if
+js
+#end
 class Decoder {
 	var o:Dynamic;
 
@@ -68,9 +70,12 @@ class Decoder {
 				case 0xd3: return readInt64(i);
 
 				// string
-				case 0xd9: return i.readString(i.readByte  ());
-				case 0xda: return i.readString(i.readUInt16());
-				case 0xdb: return i.readString(i.readInt32 ());
+				case 0xd9:
+				 var len=i.readInt32();
+				
+				 return i.read(len).toString();//i.readString(i.readByte  ());
+				//case 0xda: return i.readString(i.readUInt16());
+				//case 0xdb: return i.readString(i.readInt32 ());
 
 				// array 16, 32
 				case 0xdc: return readArray(i, i.readUInt16(), option);
@@ -106,6 +111,7 @@ class Decoder {
 		return a;
 	}
 
+   
 	function readMap(i:BytesInput, length:Int, option:DecodeOption):Dynamic {
 		switch (option) {
 			case DecodeOption.AsObject:
