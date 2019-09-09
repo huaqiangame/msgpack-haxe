@@ -1,6 +1,6 @@
 package org.msgpack;
 
-import openfl.utils.ByteArray;
+
 import haxe.Int64;
 import haxe.io.Bytes;
 import haxe.io.BytesOutput;
